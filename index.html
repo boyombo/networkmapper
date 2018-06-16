@@ -1,0 +1,78 @@
+<html>
+    <head>
+       
+    </head>
+    <body>
+        <div id="app">
+            <div>
+                <select>
+                    <option v-for="network in networks" v-bind:value="network.id">[network.name]</option>
+                </select>
+            </div>
+            <div id="map">
+                    <google-map 
+                    :center="mapCenter" 
+                    :zoom="12" style="width: 100%; height: 500px" 
+                    >
+                    <info-window
+                        :options="infoOptions"
+                        :position="infoWinPos"
+                        :opened="infoWinOpen"
+                        @closeclick="closeInfoWin()"
+                        :content="infoContent">
+                    </info-window>
+                    <google-marker :key="i" v-for="(m, i) in markerList" 
+                        :position="m.position" 
+                        :clickable="true"
+                        :label="m.label"
+                        :icon="m.icon"
+                        :draggable="true" 
+                        @click="toggleInfoWindow(m)"></google-marker>
+                </google-map>
+            </div>
+        </div>
+        <script src="vue.js"></script>
+        <script src="https://unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+        <script type="text/javascript" src="vue-google-maps.js"></script>
+        <script>
+            Vue.http.options.emulateJSON = true;
+            
+            Vue.use(VueGoogleMaps, {
+                load: {
+                  key: 'AIzaSyC66JXcDSqbT5h88fn9_jzLhGhkZwtgmSo'
+                },
+                // Demonstrating how we can customize the name of the components
+                installComponents: false,
+              });
+              document.addEventListener('DOMContentLoaded', function() {
+                  Vue.component('google-map', VueGoogleMaps.Map);
+                  Vue.component('google-marker', VueGoogleMaps.Marker);
+                  new Vue({
+                      el: '#app',
+                        delimiters: ["[","]"],
+                        data: {
+                          networks: [
+                              {id: 1, name: 'MTN'},
+                              {id: 2, name: 'Airtel'},
+                              {id: 3, name: 'Glo'},
+                              {id: 4, name: '9-mobile'},
+                              {id: 5, name: 'N-tel'}
+                          ]
+                      },
+                      computed: {
+                          markerList: function() {
+                              return [];
+                          },
+                          mapCenter: function() {
+                              return {
+                                  lng: 6.9226119,
+                                  lat: 4.899331
+                              };
+                          }
+                      }
+                  })
+              })
+        </script>
+    </body>
+</html>
